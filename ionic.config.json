@@ -1,0 +1,7 @@
+{
+  "name": "myCheckInOutApp",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite"
+}
