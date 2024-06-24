@@ -1,0 +1,21 @@
+body {
+    
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .ion-content {
+    --background: transparent;
+  }
+  
+  @media (min-width: 768px) {
+    .content-wrapper {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+  }
+  
