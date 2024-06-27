@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { IonContent, IonPage, IonInput, IonGrid, IonRow, IonCol, IonLabel, IonToast, IonRouterLink, IonButton, IonItem, IonIcon } from '@ionic/react';
+import React, { useRef, useState } from 'react';
+import { IonContent, IonPage, IonInput, IonGrid, IonRow, IonCol, IonLabel, IonToast, IonRouterLink, IonButton, IonIcon } from '@ionic/react';
 import { useHistory } from 'react-router-dom';
 import './../../master.css';
 import './Login.css';
@@ -9,15 +9,15 @@ interface LoginProps {
   onLoginSuccess: () => void;
 }
 
+
 const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
   const history = useHistory();
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const usernameRef = useRef<string>('');
+  const passwordRef = useRef<string>('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
 
-  console.log('Props:', { onLoginSuccess });
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -25,55 +25,57 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Logging in...');
     setLoading(true);
+    const username = usernameRef.current;
+    const password = passwordRef.current;
+
+    const loginPayload = {
+      logins: [
+        { username, password },
+      ],
+    };
+
+    console.log('Attempting login with payload:', loginPayload);
 
     try {
       const response = await fetch('https://smartloansbackend.azurewebsites.net/login', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          logins: [
-            {
-              username,
-              password,
-            },
-          ],
-        }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(loginPayload),
       });
 
+      console.log('Response received:', response);
+
       if (!response.ok) {
-        throw new Error('Network response was not ok');
+        throw new Error(`Network response was not ok: ${response.statusText}`);
       }
 
-      const { result } = await response.json();
+      const data = await response.json();
+      console.log('Response JSON:', data);
 
-      if (!result || !result.length) {
-        throw new Error('Invalid response structure');
-      }
+      const loginMessage = data.result[0]?.msg;
+      console.log('Login message:', loginMessage);
 
-      const message = result[0]?.msg;
-
-      if (message === 'User Invalid') {
-        setMessage(message);
-        console.error('Login failed: User Invalid');
+      if (loginMessage === 'User Invalid') {
+        setMessage(loginMessage);
+        console.error('Login failed:', loginMessage);
       } else {
-        console.log('Login successful:', message);
+        console.log('Login successful:', loginMessage);
         onLoginSuccess();
         history.push('/Checks');
       }
-    } catch (error: unknown) {
+    } catch (error) {
+      console.error('Error during login:', error);
       if (error instanceof Error) {
-        setMessage('Login failed: ' + error.message);
+        setMessage(`Login failed: ${error.message}`);
       } else {
         setMessage('Login failed: An unknown error occurred');
       }
-      console.error('Error during login:', error);
     } finally {
       setLoading(false);
     }
+
+    
   };
 
   return (
@@ -95,16 +97,13 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
                 <IonLabel position="floating">Username</IonLabel>
                 <IonInput
                   type="text"
-                  value={username}
-                  onIonChange={(e) => setUsername(e.detail.value!)}
+                  onIonChange={e => usernameRef.current = e.detail.value!}
                   style={{ marginBottom: '15px', padding: '10px', border: '1px solid #ccc', borderRadius: '4px' }}
-                ></IonInput>
-
+                />
                 <IonLabel position="floating">Password</IonLabel>
                 <IonInput
                   type={showPassword ? 'text' : 'password'}
-                  value={password}
-                  onIonChange={(e) => setPassword(e.detail.value!)}
+                  onIonChange={e => passwordRef.current = e.detail.value!}
                   style={{ marginBottom: '15px', padding: '10px', border: '1px solid #ccc', borderRadius: '4px' }}
                 >
                   <IonIcon
@@ -114,7 +113,6 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
                     style={{ position: 'absolute', top: '46%', transform: 'translateY(-50%)', right: '10px', cursor: 'pointer', zIndex: 2 }}
                   />
                 </IonInput>
-
                 <IonButton
                   type="submit"
                   expand="full"
@@ -124,14 +122,9 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
                   {loading ? 'Logging in...' : 'Login'}
                 </IonButton>
               </form>
-
               <div className="ion-text-center">
-                <p>
-                  <IonRouterLink href="/forgot-password">Forgot Password?</IonRouterLink>
-                </p>
-                <p>
-                  <IonRouterLink href="/create-account">Create Account</IonRouterLink>
-                </p>
+                <p><IonRouterLink href="/forgot-password">Forgot Password?</IonRouterLink></p>
+                <p><IonRouterLink href="/create-account">Create Account</IonRouterLink></p>
               </div>
             </IonCol>
           </IonRow>

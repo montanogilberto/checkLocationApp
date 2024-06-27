@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
-  IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonList, IonItem, IonLabel, IonInput, IonButton, IonLoading, IonAlert
+  IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonList, IonItem, IonLabel, IonButton, IonLoading, IonAlert, IonDatetime,
+  IonInput
 } from '@ionic/react';
 import './Reports.css';
 
@@ -22,11 +23,16 @@ interface Check {
 
 const Reports: React.FC = () => {
   const [checks, setChecks] = useState<Check[]>([]);
-  const [searchDate, setSearchDate] = useState('');
+  const [searchDate, setSearchDate] = useState<string | null>('');
   const [searchUserId, setSearchUserId] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedCheck, setSelectedCheck] = useState<Check | null>(null);
+
+  const handleDateChange = (e: CustomEvent) => {
+    const dateValue: string | null = typeof e.detail.value === 'string' ? e.detail.value : null;
+    setSearchDate(dateValue);
+  };
 
   useEffect(() => {
     fetchChecks();
@@ -70,19 +76,17 @@ const Reports: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        <IonHeader collapse="condense">
-          <IonToolbar>
-            <IonTitle size="large">Employee Reports</IonTitle>
-          </IonToolbar>
-        </IonHeader>
-        <IonInput value={searchDate} placeholder="Enter date (YYYY-MM-DD)" onIonChange={e => setSearchDate(e.detail.value!)} />
+        <IonDatetime
+          value={searchDate}
+          onIonChange={handleDateChange}
+        />
         <IonInput value={searchUserId} placeholder="Enter User ID" onIonChange={e => setSearchUserId(e.detail.value!)} />
         <IonButton onClick={() => fetchChecks()}>Search</IonButton>
         {loading && <IonLoading isOpen={loading} message="Loading..." />}
         {error && <IonAlert isOpen={!!error} message={error} buttons={['OK']} />}
         <IonList>
           {checks.filter(check => 
-            (check.datetimelocal.startsWith(searchDate) || searchDate === '') &&
+            (searchDate ? check.datetimelocal.startsWith(searchDate) : true) &&
             (check.userId.toString() === searchUserId || searchUserId === '')
           ).map((check) => (
             <IonItem key={check.checkId} button onClick={() => fetchCheckDetails(check.checkId)}>
