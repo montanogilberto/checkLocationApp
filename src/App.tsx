@@ -1,34 +1,38 @@
 import { Redirect, Route, useHistory } from 'react-router-dom';
 import {
+  IonAccordionGroup,
+  IonActionSheet,
   IonApp,
-  IonButton,
   IonCol,
   IonContent,
   IonIcon,
-  IonItem,
-  IonItemDivider,
   IonLabel,
-  IonList,
   IonPopover,
   IonRouterOutlet,
   IonRow,
   IonTabBar,
   IonTabButton,
   IonTabs,
-  IonToast,
   setupIonicReact,
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { calendar, closeOutline, documentTextOutline, ellipse, menu, peopleOutline, square, timeOutline, triangle } from 'ionicons/icons';
+import { calendar, menu, timeOutline } from 'ionicons/icons';
+
 import Checks from './pages/Checks';
 import Employee from './pages/Employee';
 import Reports from './pages/Reports';
 import Login from './pages/Authentication/Login';
-import Header from './components/Header';
-import LogoutAlert from './components/LogoutAlert';
 import TimeSheets from './pages/TimeSheets';
+import Payroll from './pages/Payroll';
+import Graphics from './pages/Graphics';
+
+import Header from './components/Header';
+import LogoutAlert from './components/Alerts/LogoutAlert';
+import MenuModal from './components/PopOver/MenuPopover';
+import AlertPopover from './components/PopOver/AlertPopover';
+import MailPopover from './components/PopOver/MailPopover';
+
 import useInactivityTimer from './hooks/useInactivityTimer';
-import MenuPopover from './components/MenuPopover';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -55,19 +59,22 @@ import './theme/background.css';
 import './responsive.css'
 import { useState } from 'react';
 
+
 setupIonicReact();
 
 const App: React.FC = () => {
   const [authenticated, setAuthenticated] = useState(false);
   const [showLogoutAlert, setShowLogoutAlert] = useState(false);
   const history = useHistory();
-  const [showMenuPopover, setShowMenuPopover] = useState(false);
+  const [showMenuModal, setShowMenuModal] = useState(false);
 
-  const openMenu = (e: React.MouseEvent) => {
-      e.preventDefault(); // Prevent the page from navigating
-      setShowMenuPopover(true);
+  const openMenu = () => {
+    setShowMenuModal(true);
   };
-  const closeMenu = () => setShowMenuPopover(false);
+
+  const closeMenu = () => {
+    setShowMenuModal(false);
+  };
 
 
   const handleLoginSuccess = () => {
@@ -75,7 +82,7 @@ const App: React.FC = () => {
   };
 
   const handleMenuClick = () => {
-    setShowMenuPopover(true);
+    setShowMenuModal(true);
   };
 
   const handleLogout = () => {
@@ -105,6 +112,9 @@ const App: React.FC = () => {
 
   const dismissMailPopover = () => setPopoverState({ ...popoverState, showMailPopover: false });
 
+  const openMenuModal = () => setShowMenuModal(true);
+  const closeMenuModal = () => setShowMenuModal(false);
+
   useInactivityTimer();
 
 
@@ -119,6 +129,8 @@ const App: React.FC = () => {
         <IonContent className="ion-justify-content-center">
         <IonTabs>
           <IonRouterOutlet>
+            <Route exact path="/Graphics" component={Payroll} />
+            <Route exact path="/Payroll" component={Payroll} />
             <Route exact path="/Checks" component={Checks} />
             <Route exact path="/TimeSheets" component={TimeSheets} />
             <Route exact path="/Employee" component={Employee} />
@@ -141,39 +153,23 @@ const App: React.FC = () => {
             </IonTabButton>
           </IonTabBar>
         </IonTabs>
-        <IonPopover isOpen={popoverState.showAlertPopover} event={popoverState.event} onDidDismiss={dismissAlertPopover}>
-          <IonList>
-            <IonItemDivider>
-              Alert Details
-              <IonButton fill="clear" slot="end" onClick={dismissAlertPopover}>
-                <IonIcon icon={closeOutline} />
-              </IonButton>
-            </IonItemDivider>
-            <IonItem>
-              <IonLabel>Name: Your Name</IonLabel>
-            </IonItem>
-          </IonList>
-        </IonPopover>
-        <IonPopover isOpen={popoverState.showMailPopover} event={popoverState.event} onDidDismiss={dismissMailPopover}>
-          <IonList>
-            <IonItemDivider>
-              Mail Details
-              <IonButton fill="clear" slot="end" onClick={dismissMailPopover}>
-                <IonIcon icon={closeOutline} />
-              </IonButton>
-            </IonItemDivider>
-            <IonItem>
-              <IonLabel>Email: your@email.com</IonLabel>
-            </IonItem>
-          </IonList>
-        </IonPopover>
-        <LogoutAlert isOpen={showLogoutAlert} onDidDismiss={() => setShowLogoutAlert(false)} handleLogoutConfirm={handleLogoutConfirm} />
-        <IonPopover
-          isOpen={showMenuPopover}
-          onDidDismiss={closeMenu}
-        >
-          <MenuPopover onClose={closeMenu} />
-        </IonPopover>
+        <AlertPopover
+            isOpen={popoverState.showAlertPopover}
+            event={popoverState.event}
+            onDidDismiss={dismissAlertPopover}
+          />
+        <MailPopover
+            isOpen={popoverState.showMailPopover}
+            event={popoverState.event}
+            onDidDismiss={dismissMailPopover}
+          />
+        <LogoutAlert 
+          isOpen={showLogoutAlert} 
+          onDidDismiss={() => setShowLogoutAlert(false)} 
+          handleLogoutConfirm={handleLogoutConfirm} 
+          />
+          
+<         MenuModal isOpen={showMenuModal} onDidDismiss={closeMenuModal} />
 
       </IonContent>
       </IonReactRouter>

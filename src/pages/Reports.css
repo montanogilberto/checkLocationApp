@@ -1,0 +1,20 @@
+/* Styles for export buttons */
+.export-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    height: 100%; /* Adjust as needed */
+    margin: 10px 20px; /* Adds horizontal space around each button */
+  }
+  
+  .export-button .ion-icon {
+    margin-bottom: 4px; /* Space between icon and text */
+  }
+  
+  .export-button .button-label {
+    font-size: small; /* Smaller font for button labels */
+    color: var(--ion-text-color); /* Ensures text color matches the theme */
+  }
+  
