@@ -104,11 +104,11 @@ const Reports: React.FC = () => {
       <IonButtons slot="end">
         <IonButton onClick={exportPDF} className="export-button">
           <IonIcon icon={documentTextOutline} size='large' />
-          <div className="button-label">PDF</div>
+          <IonText>PDF</IonText>
         </IonButton>
         <IonButton onClick={exportExcel} className="export-button">
           <IonIcon icon={cloudDownloadOutline} size='large' />
-          <div className="button-label">Excel</div>
+          <IonText>Excel</IonText>
         </IonButton>
       </IonButtons>
       </IonToolbar>

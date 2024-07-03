@@ -32,16 +32,42 @@ const MenuModal: React.FC<MenuModalProps> = ({ isOpen, onDidDismiss }) => {
               <IonIcon icon={peopleOutline} />
               <IonLabel>Employee</IonLabel>
             </IonCol>
-          </IonRow>
-          <IonRow>
             <IonCol className="icon-button" onClick={() => navigate('/payroll')}>
-              <IonIcon icon={cashOutline} />
+              <IonIcon icon={peopleOutline} />
               <IonLabel>Payroll</IonLabel>
             </IonCol>
+
+          </IonRow>
+          <IonRow>
             <IonCol className="icon-button" onClick={() => navigate('/graphics')}>
-              <IonIcon icon={barChartOutline} />
+              <IonIcon icon={peopleOutline} />
               <IonLabel>Graphics</IonLabel>
             </IonCol>
+
+            <IonCol className="icon-button" onClick={() => navigate('/contractors')}>
+              <IonIcon icon={cashOutline} />
+              <IonLabel>Contractors</IonLabel>
+            </IonCol>
+            <IonCol className="icon-button" onClick={() => navigate('/departaments')}>
+              <IonIcon icon={barChartOutline} />
+              <IonLabel>Departaments</IonLabel>
+            </IonCol>
+
+          </IonRow>
+          <IonRow>
+          <IonCol className="icon-button" onClick={() => navigate('/employeeProjectAssignments')}>
+              <IonIcon icon={barChartOutline} />
+              <IonLabel>Project Assignments</IonLabel>
+            </IonCol>
+            <IonCol className="icon-button" onClick={() => navigate('/employmentTypes')}>
+              <IonIcon icon={barChartOutline} />
+              <IonLabel>Employment Types</IonLabel>
+            </IonCol>
+            <IonCol className="icon-button" onClick={() => navigate('/createProjects')}>
+              <IonIcon icon={barChartOutline} />
+              <IonLabel>Create Projects</IonLabel>
+            </IonCol>
+
           </IonRow>
           <IonRow>
             <IonCol className="icon-button" onClick={onDidDismiss}>

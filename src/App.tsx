@@ -1,22 +1,24 @@
+import React, { useState } from 'react';
 import { Redirect, Route, useHistory } from 'react-router-dom';
 import {
-  IonAccordionGroup,
-  IonActionSheet,
   IonApp,
-  IonCol,
-  IonContent,
-  IonIcon,
-  IonLabel,
-  IonPopover,
   IonRouterOutlet,
-  IonRow,
   IonTabBar,
   IonTabButton,
-  IonTabs,
+  IonIcon,
+  IonLabel,
   setupIonicReact,
+  IonPage,
+  IonRow,
+  IonCol,
+
+  IonSplitPane,
+  IonContent,
+  IonTabs,
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { calendar, menu, timeOutline } from 'ionicons/icons';
+
 
 import Checks from './pages/Checks';
 import Employee from './pages/Employee';
@@ -31,6 +33,14 @@ import LogoutAlert from './components/Alerts/LogoutAlert';
 import MenuModal from './components/PopOver/MenuPopover';
 import AlertPopover from './components/PopOver/AlertPopover';
 import MailPopover from './components/PopOver/MailPopover';
+import CreateContractor from './pages/Catalogs/Contractors/CreateContractor';
+import CreateDepartment from './pages/Catalogs/Departaments/CreateDepartment';
+import CreateEmployeeProjectAssignment from './pages/Catalogs/EmployeeProjectAssignments/CreateEmployeeProjectAssignment';
+import CreateEmployee from './pages/Catalogs/Employees/CreateEmployee';
+import CreateEmploymentType from './pages/Catalogs/EmploymentTypes/CreateEmploymentType';
+import CreateProject from './pages/Catalogs/Projects/CreateProject';
+import CreateStatus from './pages/Catalogs/Statuses/CreateStatus';
+
 
 import useInactivityTimer from './hooks/useInactivityTimer';
 
@@ -56,9 +66,7 @@ import '@ionic/react/css/palettes/dark.system.css';
 /* Theme variables */
 import './theme/variables.css';
 import './theme/background.css';
-import './responsive.css'
-import { useState } from 'react';
-
+import './responsive.css';
 
 setupIonicReact();
 
@@ -67,14 +75,6 @@ const App: React.FC = () => {
   const [showLogoutAlert, setShowLogoutAlert] = useState(false);
   const history = useHistory();
   const [showMenuModal, setShowMenuModal] = useState(false);
-
-  const openMenu = () => {
-    setShowMenuModal(true);
-  };
-
-  const closeMenu = () => {
-    setShowMenuModal(false);
-  };
 
 
   const handleLoginSuccess = () => {
@@ -112,66 +112,71 @@ const App: React.FC = () => {
 
   const dismissMailPopover = () => setPopoverState({ ...popoverState, showMailPopover: false });
 
-  const openMenuModal = () => setShowMenuModal(true);
-  const closeMenuModal = () => setShowMenuModal(false);
-
   useInactivityTimer();
-
 
   return (
     <IonApp>
       <IonReactRouter>
-        <IonRow className="ion-justify-content-center">
-          <IonCol size="12" sizeSm="8" sizeMd="6" sizeLg="4">
-            <Header presentAlertPopover={presentAlertPopover} presentMailPopover={presentMailPopover} handleLogout={handleLogout} />
-          </IonCol>
-        </IonRow>
-        <IonContent className="ion-justify-content-center">
-        <IonTabs>
-          <IonRouterOutlet>
-            <Route exact path="/Graphics" component={Payroll} />
-            <Route exact path="/Payroll" component={Payroll} />
-            <Route exact path="/Checks" component={Checks} />
-            <Route exact path="/TimeSheets" component={TimeSheets} />
-            <Route exact path="/Employee" component={Employee} />
-            <Route exact path="/Reports" component={Reports} />
-            <Route exact path="/Login" component={Login} />
-            <Route exact path="/" render={() => <Redirect to="/Checks" />} />
-          </IonRouterOutlet>
-          <IonTabBar slot="bottom">
-            <IonTabButton tab="Checks" href="/Checks">
-              <IonIcon aria-hidden="true" icon={timeOutline} />
-              <IonLabel>Check Hours</IonLabel>
-            </IonTabButton>
-            <IonTabButton tab="timesheets" href="/timesheets">
-              <IonIcon aria-hidden="true" icon={calendar} />
-              <IonLabel>TimeSheets</IonLabel>
-            </IonTabButton>
-            <IonTabButton tab="menu" onClick={handleMenuClick}>
-              <IonIcon aria-hidden="true" icon={menu} />
-              <IonLabel>Menu</IonLabel>
-            </IonTabButton>
-          </IonTabBar>
-        </IonTabs>
-        <AlertPopover
-            isOpen={popoverState.showAlertPopover}
-            event={popoverState.event}
-            onDidDismiss={dismissAlertPopover}
-          />
-        <MailPopover
-            isOpen={popoverState.showMailPopover}
-            event={popoverState.event}
-            onDidDismiss={dismissMailPopover}
-          />
-        <LogoutAlert 
-          isOpen={showLogoutAlert} 
-          onDidDismiss={() => setShowLogoutAlert(false)} 
-          handleLogoutConfirm={handleLogoutConfirm} 
-          />
-          
-<         MenuModal isOpen={showMenuModal} onDidDismiss={closeMenuModal} />
+        <IonSplitPane contentId="main-content">
 
-      </IonContent>
+          <IonPage id="main-content">
+            <IonRow className="ion-justify-content-center">
+              <IonCol size="12" sizeSm="8" sizeMd="6" sizeLg="4">
+                <Header presentAlertPopover={presentAlertPopover} presentMailPopover={presentMailPopover} handleLogout={handleLogout}  />
+              </IonCol>
+            </IonRow>
+            <IonContent className="ion-justify-content-center">
+              <IonTabs>
+                <IonRouterOutlet>
+                  <Route exact path="/CreateStatus" component={CreateStatus} />
+                  <Route exact path="/CreateProjects" component={CreateProject} />
+                  <Route exact path="/EmploymentTypes" component={CreateEmploymentType} />
+                  <Route exact path="/CreateEmployees" component={CreateEmployee} />
+                  <Route exact path="/EmployeeProjectAssignments" component={CreateEmployeeProjectAssignment} />
+                  <Route exact path="/Departaments" component={CreateDepartment} />
+                  <Route exact path="/Contractors" component={CreateContractor} />
+                  <Route exact path="/Payroll" component={Payroll} />
+                  <Route exact path="/Checks" component={Checks} />
+                  <Route exact path="/TimeSheets" component={TimeSheets} />
+                  <Route exact path="/Employee" component={Employee} />
+                  <Route exact path="/Reports" component={Reports} />
+                  <Route exact path="/Login" component={Login} />
+                  <Route exact path="/" render={() => <Redirect to="/Checks" />} />
+                </IonRouterOutlet>
+                <IonTabBar slot="bottom">
+                  <IonTabButton tab="Checks" href="/Checks">
+                    <IonIcon aria-hidden="true" icon={timeOutline} size='large'/>
+                    <IonLabel>Check Hours</IonLabel>
+                  </IonTabButton>
+                  <IonTabButton tab="timesheets" href="/timesheets">
+                    <IonIcon aria-hidden="true" icon={calendar} size='large'/>
+                    <IonLabel>TimeSheets</IonLabel>
+                  </IonTabButton>
+                  <IonTabButton tab="menu" onClick={handleMenuClick}>
+                    <IonIcon aria-hidden="true" icon={menu} size='large' />
+                    <IonLabel>Menu</IonLabel>
+                  </IonTabButton>
+                </IonTabBar>
+              </IonTabs>
+              <AlertPopover
+                isOpen={popoverState.showAlertPopover}
+                event={popoverState.event}
+                onDidDismiss={dismissAlertPopover}
+              />
+              <MailPopover
+                isOpen={popoverState.showMailPopover}
+                event={popoverState.event}
+                onDidDismiss={dismissMailPopover}
+              />
+              <LogoutAlert
+                isOpen={showLogoutAlert}
+                onDidDismiss={() => setShowLogoutAlert(false)}
+                handleLogoutConfirm={handleLogoutConfirm}
+              />
+              <MenuModal isOpen={showMenuModal} onDidDismiss={() => setShowMenuModal(false)} />
+            </IonContent>
+          </IonPage>
+        </IonSplitPane>
       </IonReactRouter>
     </IonApp>
   );
