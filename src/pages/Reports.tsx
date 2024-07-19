@@ -99,66 +99,70 @@ const Reports: React.FC = () => {
 
   return (
     <IonPage>
-    <IonHeader>
-      <IonToolbar>
-      <IonButtons slot="end">
-        <IonButton onClick={exportPDF} className="export-button">
-          <IonIcon icon={documentTextOutline} size='large' />
-          <IonText>PDF</IonText>
-        </IonButton>
-        <IonButton onClick={exportExcel} className="export-button">
-          <IonIcon icon={cloudDownloadOutline} size='large' />
-          <IonText>Excel</IonText>
-        </IonButton>
-      </IonButtons>
-      </IonToolbar>
-    </IonHeader>
-      <IonContent fullscreen className="ion-padding">
-        <IonGrid>
-          <IonRow>
-            <IonCol size="12" size-md="6">
-              <IonDatetimeButton datetime="select-date" onClick={() => setIsModalOpen(true)}></IonDatetimeButton>
-              <IonModal isOpen={isModalOpen} onDidDismiss={() => setIsModalOpen(false)} keepContentsMounted={true}>
-                <IonDatetime
-                  id="select-date"
-                  presentation="date"
-                  value={searchDate}
-                  onIonChange={handleDateChange}
-                ></IonDatetime>
-                <IonButton expand="block" onClick={handleConfirmDate}>Confirm Date</IonButton>
-              </IonModal>
-            </IonCol>
-            <IonCol size="12" size-md="6">
-              <IonInput value={searchUserId} placeholder="Enter User ID" onIonChange={e => setSearchUserId(e.detail.value!)} />
-            </IonCol>
-          </IonRow>
-          <IonRow>
-            <IonCol>
-              <IonButton expand="block" onClick={fetchChecks}>Search</IonButton>
-            </IonCol>
-          </IonRow>
-        </IonGrid>
-        {loading && <IonLoading isOpen={loading} message="Loading..." />}
-        {error && <IonAlert isOpen={!!error} message={error} buttons={['OK']} />}
-        <IonList>
-          {checks.map((check) => (
-            <IonItem key={check.checkId} button onClick={() => fetchCheckDetails(check.checkId)}>
-              <IonLabel>
-                <h2>{check.description}</h2>
-                <p>Date: {check.datetimelocal} - User ID: {check.userId}</p>
-              </IonLabel>
-            </IonItem>
-          ))}
-        </IonList>
-        {selectedCheck && (
-          <div>
-            <h2>Details for Check ID: {selectedCheck.checkId}</h2>
-            <p>{selectedCheck.description}</p>
-            <p>Date: {selectedCheck.datetimelocal}</p>
-            <p>Latitude: {selectedCheck.latitude}, Longitude: {selectedCheck.longitude}</p>
-          </div>
-        )}
-      </IonContent>
+      <IonRow className="ion-justify-content-center">
+        <IonCol size="12" sizeSm="8" sizeMd="6" sizeLg="4">
+          <IonHeader>
+            <IonToolbar>
+            <IonButtons slot="end">
+              <IonButton onClick={exportPDF} className="export-button">
+                <IonIcon icon={documentTextOutline} size='large' />
+                <IonText>PDF</IonText>
+              </IonButton>
+              <IonButton onClick={exportExcel} className="export-button">
+                <IonIcon icon={cloudDownloadOutline} size='large' />
+                <IonText>Excel</IonText>
+              </IonButton>
+            </IonButtons>
+            </IonToolbar>
+          </IonHeader>
+            <IonContent fullscreen className="ion-padding">
+              <IonGrid>
+                <IonRow>
+                  <IonCol size="12" size-md="6">
+                    <IonDatetimeButton datetime="select-date" onClick={() => setIsModalOpen(true)}></IonDatetimeButton>
+                    <IonModal isOpen={isModalOpen} onDidDismiss={() => setIsModalOpen(false)} keepContentsMounted={true}>
+                      <IonDatetime
+                        id="select-date"
+                        presentation="date"
+                        value={searchDate}
+                        onIonChange={handleDateChange}
+                      ></IonDatetime>
+                      <IonButton expand="block" onClick={handleConfirmDate}>Confirm Date</IonButton>
+                    </IonModal>
+                  </IonCol>
+                  <IonCol size="12" size-md="6">
+                    <IonInput value={searchUserId} placeholder="Enter User ID" onIonChange={e => setSearchUserId(e.detail.value!)} />
+                  </IonCol>
+                </IonRow>
+                <IonRow>
+                  <IonCol>
+                    <IonButton expand="block" onClick={fetchChecks}>Search</IonButton>
+                  </IonCol>
+                </IonRow>
+              </IonGrid>
+              {loading && <IonLoading isOpen={loading} message="Loading..." />}
+              {error && <IonAlert isOpen={!!error} message={error} buttons={['OK']} />}
+              <IonList>
+                {checks.map((check) => (
+                  <IonItem key={check.checkId} button onClick={() => fetchCheckDetails(check.checkId)}>
+                    <IonLabel>
+                      <h2>{check.description}</h2>
+                      <p>Date: {check.datetimelocal} - User ID: {check.userId}</p>
+                    </IonLabel>
+                  </IonItem>
+                ))}
+              </IonList>
+              {selectedCheck && (
+                <div>
+                  <h2>Details for Check ID: {selectedCheck.checkId}</h2>
+                  <p>{selectedCheck.description}</p>
+                  <p>Date: {selectedCheck.datetimelocal}</p>
+                  <p>Latitude: {selectedCheck.latitude}, Longitude: {selectedCheck.longitude}</p>
+                </div>
+              )}
+            </IonContent>
+        </IonCol>
+      </IonRow>
     </IonPage>
   );
 };
