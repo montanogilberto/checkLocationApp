@@ -1,0 +1,17 @@
+ion-card {
+    margin: 1px;
+    padding: 1px;
+  }
+
+  ion-card-header{
+    color: dimgrey;
+  }
+
+  .ion-card-tittle{
+    padding-top: 20px;
+  }
+  
+  ion-card-header, ion-card-content {
+    padding: 0px;
+  }
+  
