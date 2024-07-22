@@ -21,7 +21,8 @@ import { calendar, menu, timeOutline } from 'ionicons/icons';
 
 
 import Checks from './pages/Checks';
-import Employee from './pages/Employee';
+// import Employee from './pages/Employee';
+import EmployeeComponent from './pages/Employee';
 import Reports from './pages/Reports';
 import Login from './pages/Authentication/Login';
 import TimeSheets from './pages/TimeSheets';
@@ -138,7 +139,7 @@ const App: React.FC = () => {
                   <Route exact path="/Payroll" component={Payroll} />
                   <Route exact path="/Checks" component={Checks} />
                   <Route exact path="/TimeSheets" component={TimeSheets} />
-                  <Route exact path="/Employee" component={Employee} />
+                  <Route exact path="/Employee" component={EmployeeComponent} />
                   <Route exact path="/Reports" component={Reports} />
                   <Route exact path="/Login" component={Login} />
                   <Route exact path="/" render={() => <Redirect to="/Checks" />} />
@@ -183,3 +184,4 @@ const App: React.FC = () => {
 };
 
 export default App;
+
