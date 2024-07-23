@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 export const fetchAddress = async (latitude: number, longitude: number): Promise<string> => {
-  const subscriptionKey = 'Your_Subscription_Key';
+  const subscriptionKey = '';
   const url = `https://atlas.microsoft.com/search/address/reverse/json?api-version=1.0&query=${latitude},${longitude}&subscription-key=${subscriptionKey}`;
   try {
     const response = await axios.get(url);
