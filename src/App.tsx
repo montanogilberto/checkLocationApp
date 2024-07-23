@@ -20,9 +20,7 @@ import { IonReactRouter } from '@ionic/react-router';
 import { calendar, menu, timeOutline } from 'ionicons/icons';
 
 
-import Checks from './pages/Checks';
-// import Employee from './pages/Employee';
-import EmployeeComponent from './pages/Employee';
+import Checks from './pages/Tabs/Checks/Checks';
 import Reports from './pages/Reports';
 import Login from './pages/Authentication/Login';
 import TimeSheets from './pages/TimeSheets';
@@ -34,6 +32,8 @@ import LogoutAlert from './components/Alerts/LogoutAlert';
 import MenuModal from './components/PopOver/MenuPopover';
 import AlertPopover from './components/PopOver/AlertPopover';
 import MailPopover from './components/PopOver/MailPopover';
+
+import Employee from './pages/Catalogs/Employees/Employee';
 import CreateContractor from './pages/Catalogs/Contractors/CreateContractor';
 import CreateDepartment from './pages/Catalogs/Departaments/CreateDepartment';
 import CreateEmployeeProjectAssignment from './pages/Catalogs/EmployeeProjectAssignments/CreateEmployeeProjectAssignment';
@@ -139,7 +139,7 @@ const App: React.FC = () => {
                   <Route exact path="/Payroll" component={Payroll} />
                   <Route exact path="/Checks" component={Checks} />
                   <Route exact path="/TimeSheets" component={TimeSheets} />
-                  <Route exact path="/Employee" component={EmployeeComponent} />
+                  <Route exact path="/Employee" component={Employee} />
                   <Route exact path="/Reports" component={Reports} />
                   <Route exact path="/Login" component={Login} />
                   <Route exact path="/" render={() => <Redirect to="/Checks" />} />
