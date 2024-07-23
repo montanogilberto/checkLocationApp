@@ -200,66 +200,81 @@ const Checks = () => {
                 </IonCol>
             </IonRow>
             <IonContent>
-                <IonRow className="ion-justify-content-center">
-                    <IonCol size="12" sizeSm="8" sizeMd="6" sizeLg="4">
-                        {trackingComplete ? (
-                            <IonText style={{ textAlign: 'center', fontSize: '18px', padding: '20px', color: 'green' }}>
-                                Hours tracking complete
-                            </IonText>
-                        ) : (
-                            <>
+            <IonRow className="ion-justify-content-center">
+                <IonCol size="12" sizeSm="8" sizeMd="6" sizeLg="4">
+                    {trackingComplete ? (
+                        <IonText style={{ textAlign: 'center', fontSize: '18px', padding: '20px', color: 'green' }}>
+                            Hours tracking complete
+                        </IonText>
+                    ) : (
+                        <>
+                        {!checkInData && (
+                        <IonButton
+                            expand="block"
+                            onClick={handleCheckIn} 
+                            className="icon-button">
+                            <IonIcon 
+                                slot="start" // Icon positioning
+                                icon={timeOutline} 
+                                style={{ fontSize: '54px' }} // Icon size to match the tab icon size
+                            />
+                            Check In
+                        </IonButton>
+                        )}
+                        {checkInData && !checkOutData && (
+                        <IonButton onClick={handleCheckOut} className="icon-button">
+                            <IonIcon 
+                                slot="start" // Icon positioning
+                                icon={timeOutline} 
+                                style={{ fontSize: '54px' }} // Icon size to match the tab icon size
+                            />
+                            Check Out
+                        </IonButton>
+                        )}
+                        </>
+                    )}
+                </IonCol>
+            </IonRow>
+            <IonRow className="ion-justify-content-center">
+                <IonCol size="12" sizeSm="8" sizeMd="6" sizeLg="4">
+                    <IonAlert
+                        isOpen={showAlert}
+                        onDidDismiss={() => setShowAlert(false)}
+                        header="Alert"
+                        message={alertMessage}
+                        buttons={['OK']}
+                    />
+                    {checkInData && (
+                        <IonCard>
+                            <IonCardHeader>Checked in at: {checkInData.localTime}</IonCardHeader>
+                            <IonCardContent>
+                                Location: {checkInData.location.latitude.toFixed(6)}, {checkInData.location.longitude.toFixed(6)}
                                 <br />
-                                {!checkInData && (
-                                    <IonButton expand="block" onClick={handleCheckIn} className="large-button">
-                                        <IonIcon slot="start" icon={timeOutline} />
-                                        Check In
-                                    </IonButton>
-                                )}
-                                {checkInData && !checkOutData && (
-                                    <IonButton expand="block" onClick={handleCheckOut} className="large-button">
-                                        <IonIcon slot="start" icon={checkmarkDoneOutline} />
-                                        Check Out
-                                    </IonButton>
-                                )}
-                            </>
-                        )}
-                        <IonAlert
-                            isOpen={showAlert}
-                            onDidDismiss={() => setShowAlert(false)}
-                            header={'Alert'}
-                            message={alertMessage}
-                            buttons={['OK']}
-                        />
-                        {checkInData && (
-                            <IonCard>
-                                <IonCardHeader>Checked in at: {checkInData.localTime}</IonCardHeader>
-                                <IonCardContent>
-                                    Location: {checkInData.location.latitude.toFixed(6)}, {checkInData.location.longitude.toFixed(6)}
-                                    <br />
-                                    Address: {checkInData.address}
-                                </IonCardContent>
-                            </IonCard>
-                        )}
-                        {checkOutData && (
-                            <IonCard>
-                                <IonCardHeader>Checked out at: {checkOutData.localTime}</IonCardHeader>
-                                <IonCardContent>
-                                    Location: {checkOutData.location.latitude.toFixed(6)}, {checkOutData.location.longitude.toFixed(6)}
-                                    <br />
-                                    Address: {checkOutData.address}
-                                </IonCardContent>
-                            </IonCard>
-                        )}
-                        <IonToast
-                            isOpen={showToast}
-                            onDidDismiss={() => setShowToast(false)}
-                            message={toastMessage}
-                            duration={5000}
-                        />
-                        <IonLoading isOpen={showLoading} message={'Please wait...'} />
-                    </IonCol>
-                </IonRow>
-            </IonContent>
+                                Address: {checkInData.address}
+                            </IonCardContent>
+                        </IonCard>
+                    )}
+                    {checkOutData && (
+                        <IonCard>
+                            <IonCardHeader>Checked out at: {checkOutData.localTime}</IonCardHeader>
+                            <IonCardContent>
+                                Location: {checkOutData.location.latitude.toFixed(6)}, {checkOutData.location.longitude.toFixed(6)}
+                                <br />
+                                Address: {checkOutData.address}
+                            </IonCardContent>
+                        </IonCard>
+                    )}
+                    <IonToast
+                        isOpen={showToast}
+                        onDidDismiss={() => setShowToast(false)}
+                        message={toastMessage}
+                        duration={5000}
+                    />
+                    <IonLoading isOpen={showLoading} message="Please wait..." />
+                </IonCol>
+            </IonRow>
+        </IonContent>
+
         </IonPage>
     );
 };

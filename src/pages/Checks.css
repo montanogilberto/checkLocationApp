@@ -1,7 +1,0 @@
-.large-button  {
-    --width: 400px;        /* Width of the button */
-    --height: 600px;       /* Height of the button */
-    --border-radius: 95px; /* Makes it perfectly circular */
-    font-size: 16px;      /* Font size of the label */
-  }
-  
