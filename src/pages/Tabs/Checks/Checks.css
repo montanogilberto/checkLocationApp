@@ -5,5 +5,5 @@
   --padding-start: 10px;      /* Padding from the start */
   --padding-end: 10px;        /* Padding at the end */
   --box-shadow: none;         /* No shadow for a flat design */
-  --border: none;             /* Removes any border */
+  border: 1px;             /* Removes any border */
 }
