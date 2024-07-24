@@ -1,8 +1,9 @@
-// apiUtils.ts
 import axios from 'axios';
+import { CheckData } from './types';
 
+// Function to fetch address using Geolocation coordinates
 export const fetchAddress = async (latitude: number, longitude: number): Promise<string> => {
-  const subscriptionKey = '';
+  const subscriptionKey = '8otatwu41roiQR3rNcsgwewjclmHYjEamWcF1eXdGlnXwcoBRDH1JQQJ99AFACYeBjFsu8ALAAAgAZMPSW63';
   const url = `https://atlas.microsoft.com/search/address/reverse/json?api-version=1.0&query=${latitude},${longitude}&subscription-key=${subscriptionKey}`;
   try {
     const response = await axios.get(url);
@@ -16,6 +17,12 @@ export const fetchAddress = async (latitude: number, longitude: number): Promise
   }
 };
 
-export const formatDateForSQL = (date: any): string => {
-  return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}T${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`;
+// Function to send data to the backend
+export const sendDataToServer = async (data: any, url: string) => {
+  try {
+    const response = await axios.post(url, data);
+    return response;
+  } catch (error) {
+    throw error;
+  }
 };

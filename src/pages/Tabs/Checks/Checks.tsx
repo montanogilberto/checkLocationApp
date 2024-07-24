@@ -1,32 +1,11 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { IonContent, IonPage, IonLoading, IonCardContent, IonCard, IonCardHeader, IonHeader, IonToolbar, IonTitle, IonButton, IonAlert, IonText, IonCol, IonRow, IonIcon, IonToast } from '@ionic/react';
+import React, { useState, useEffect } from 'react';
+import { IonContent, IonPage, IonLoading, IonCardContent, IonCard, IonCardHeader, IonHeader, IonToolbar, IonTitle, IonButton, IonAlert, IonText, IonCol, IonRow, IonIcon, IonToast, IonItem, IonLabel, IonList, IonNote, IonInput, IonTextarea } from '@ionic/react';
 import { Geolocation } from '@capacitor/geolocation';
-import axios from 'axios';
-import { timeOutline, checkmarkDoneOutline } from 'ionicons/icons';
+import { locationOutline, timeOutline } from 'ionicons/icons';
+import { CheckData } from './types'; // Import CheckData interface
+import { fetchAddress, sendDataToServer } from './api'; // Import API functions
+import { parseAddress, formatDateForSQL } from './utils'; // Import utility functions
 import './Checks.css';
-
-interface CheckData {
-    time: string;
-    localTime: string;
-    location: {
-        latitude: number;
-        longitude: number;
-        accuracy?: number;
-        altitudeAccuracy?: number | null;
-        altitude?: number | null;
-        speed?: number | null;
-        heading?: number | null;
-    };
-    address?: string;
-}
-
-const parseAddress = (address: string) => {
-  const parts = address.split(',').map((part: string) => part.trim());
-  if (parts.length < 4) {
-      return { street: parts[0], postalCode: '', city: parts[1], state: parts[2] };
-  }
-  return { street: parts[0], postalCode: parts[1], city: parts[2], state: parts[3] };
-};
 
 
 const Checks = () => {
@@ -40,6 +19,17 @@ const Checks = () => {
     const [trackingComplete, setTrackingComplete] = useState(false);
     const [showToast, setShowToast] = useState(false);
     const [toastMessage, setToastMessage] = useState('');
+    const [alertButtons, setAlertButtons] = useState<any[]>([
+        {
+            text: 'OK',
+            role: 'cancel',
+            handler: () => {}
+        }
+    ]);
+    const [comment, setComment] = useState("");
+    const [showSubmitButton, setShowSubmitButton] = useState(false);
+
+
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -49,48 +39,29 @@ const Checks = () => {
         return () => clearInterval(timer);
     }, [localTimeZone]);
 
-    const fetchAddress = useCallback(async (latitude: number, longitude: number): Promise<string> => {
-        const subscriptionKey = '8otatwu41roiQR3rNcsgwewjclmHYjEamWcF1eXdGlnXwcoBRDH1JQQJ99AFACYeBjFsu8ALAAAgAZMPSW63';
-        const url = `https://atlas.microsoft.com/search/address/reverse/json?api-version=1.0&query=${latitude},${longitude}&subscription-key=${subscriptionKey}`;
-        try {
-            const response = await axios.get(url);
-            if (response.data && response.data.addresses && response.data.addresses.length > 0) {
-                return response.data.addresses[0].address.freeformAddress;
-            }
-            return "Unknown location";
-        } catch (error) {
-            console.error('Error fetching address:', error);
-            return "Failed to fetch location";
-        }
-    }, []);
-
-    const formatDateForSQL = (date: any) => {
-      return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}T${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`;
-    }
-    
-
     const handleCheckIn = async () => {
-      setShowLoading(true); // Show a loading indicator
+      setShowLoading(true);
       try {
           const position = await Geolocation.getCurrentPosition();
           const address = await fetchAddress(position.coords.latitude, position.coords.longitude);
           const addressParts = parseAddress(address);
           const now = new Date();
+          const localTime = now.toLocaleString()
           const formattedDateTime = formatDateForSQL(now);
-          const checkInData = {
+          const newCheckInData = {
               time: now.toISOString(),
-              localTime: formattedDateTime,
+              localTime: localTime,
               location: position.coords,
               address
           };
-          setCheckInData(checkInData);
+          setCheckInData(newCheckInData);
   
           const dataToSend = {
               checks: [{
                   latitude: position.coords.latitude.toString(),
                   longitude: position.coords.longitude.toString(),
                   description: address,
-                  datetimelocal: formattedDateTime,
+                  datetimelocal: localTime,
                   checkTypeId: 1,
                   userId: 1,
                   street: addressParts.street,
@@ -104,28 +75,24 @@ const Checks = () => {
           };
   
           console.log('Data sent to server:', dataToSend);
-          const response = await axios.post('https://smartloansbackend.azurewebsites.net/checks', dataToSend);
+          const response = await sendDataToServer(dataToSend, 'https://smartloansbackend.azurewebsites.net/checks');
   
-          // Check if the response is successful and has the expected data
           if (response.status === 200 && response.data && response.data.length > 0 ) {
-              console.log('Response message:', response.data); // Log the message
+              console.log('Response message:', response.data);
               setToastMessage('Check-in successful!');
               setShowToast(true);
-              setTimeout(() => setShowToast(false), 5000); 
+              setTimeout(() => setShowToast(false), 5000);
           } else {
               throw new Error('No response from the server or unknown format');
           }
       } catch (error: any) {
           console.error('Check-in error:', error);
-          // If the error is from Axios and has a response, use the status text, else use a generic message
           setToastMessage(error.response ? `${error.response.status}: ${error.response.statusText}` : "Failed to check in. Please try again.");
           setShowToast(true);
           setTimeout(() => setShowToast(false), 5000);
       }
-      setShowLoading(false); // Hide the loading indicator
-  };
-  
-    
+      setShowLoading(false);
+    };
 
     const handleCheckOut = async () => {
         if (!checkInData) {
@@ -133,7 +100,39 @@ const Checks = () => {
             setShowAlert(true);
             return;
         }
-
+    
+        const now = new Date();
+        const checkInTime = new Date(checkInData.time);
+        const diff = (now.getTime() - checkInTime.getTime()) / (1000 * 60 * 60); // Difference in hours
+        const hoursRemaining = 8 - diff;
+    
+        if (diff < 8) {
+            setAlertMessage(`Are you sure you want to check out before completing 8 hours? You still have ${hoursRemaining.toFixed(2)} hours remaining.`);
+            setShowAlert(true);
+            // Set up to handle the user's decision
+            setAlertButtons([
+                {
+                    text: 'Cancel',
+                    role: 'cancel',
+                    handler: () => {
+                        console.log('Checkout cancelled');
+                    }
+                },
+                {
+                    text: 'Check Out',
+                    handler: () => {
+                        performCheckout();
+                    }
+                }
+            ]);
+            return;
+        }
+    
+        // If 8 hours have passed, proceed to checkout
+        performCheckout();
+    };
+    
+    const performCheckout = async () => {
         setShowLoading(true);
         try {
             const position = await Geolocation.getCurrentPosition();
@@ -141,14 +140,14 @@ const Checks = () => {
             const addressParts = parseAddress(address);
             const now = new Date();
             const formattedDateTime = formatDateForSQL(now);
-            const checkOutData = {
-                time: new Date().toISOString(),
-                localTime: new Date().toLocaleString(),
+            const newCheckOutData = {
+                time: now.toISOString(),
+                localTime: now.toLocaleString(),
                 location: position.coords,
                 address
             };
-            setCheckOutData(checkOutData);
-
+            setCheckOutData(newCheckOutData);
+    
             const dataToSend = {
                 checks: [{
                     latitude: position.coords.latitude.toString(),
@@ -161,32 +160,40 @@ const Checks = () => {
                     postalCode: addressParts.postalCode,
                     city: addressParts.city,
                     state: addressParts.state,
-                    createdAt: new Date().toISOString(),
+                    createdAt: now.toISOString(),
                     updatedAt: null,
                     action: "1"
                 }]
             };
-
-            console.log(dataToSend,'post data')
-
-            const response = await axios.post('https://smartloansbackend.azurewebsites.net/checks', dataToSend);
-            // Check if the response is successful and has the expected data
-            if (response.status === 200 && response.data && response.data.length > 0 ) {
-                console.log('Response message:', response.data); // Log the message
-                setToastMessage(response.data); // Set the message to be displayed in an alert
-                setShowToast(true); // Show the alert
-                setTimeout(() => setShowToast(false), 5000); 
+    
+            const response = await sendDataToServer(dataToSend, 'https://smartloansbackend.azurewebsites.net/checks');
+            if (response.status === 200 && response.data && response.data.length > 0) {
+                setToastMessage('Check-out successful!');
+                setShowToast(true);
+                setTimeout(() => setShowToast(false), 5000);
             } else {
                 throw new Error('No response from the server or unknown format');
             }
         } catch (error: any) {
             console.error('Check-out error:', error);
-            setAlertMessage("Failed to check out. Please try again. " + error.message || "Unknown error");
+            setAlertMessage("Failed to check out. Please try again. " + (error.message || "Unknown error"));
             setShowAlert(true);
-            setTimeout(() => setShowAlert(false), 5000); 
+            setTimeout(() => setShowAlert(false), 5000);
         }
         setShowLoading(false);
     };
+
+    const handleCommentSubmit = () => {
+        console.log("Comment submitted:", comment);
+        // Optionally send the comment to the server here
+        // Reset the comment input field
+        setComment("");
+        // Show a toast or alert to confirm submission
+        setToastMessage("Comment submitted successfully!");
+        setShowToast(true);
+        setTimeout(() => setShowToast(false), 5000);
+    };
+
 
     return (
         <IonPage>
@@ -242,28 +249,57 @@ const Checks = () => {
                         onDidDismiss={() => setShowAlert(false)}
                         header="Alert"
                         message={alertMessage}
-                        buttons={['OK']}
+                        buttons={alertButtons}
                     />
                     {checkInData && (
                         <IonCard>
-                            <IonCardHeader>Checked in at: {checkInData.localTime}</IonCardHeader>
-                            <IonCardContent>
-                                Location: {checkInData.location.latitude.toFixed(6)}, {checkInData.location.longitude.toFixed(6)}
-                                <br />
-                                Address: {checkInData.address}
-                            </IonCardContent>
+                                <IonList >
+                                    <IonItem style={{ fontSize: '1.2em', fontWeight: 'bold' }} >Checked in at: {checkInData.localTime}</IonItem>
+                                    <IonItem>
+                                        <IonIcon icon={locationOutline} slot="start" style={{ fontSize: '1.5em' }} /> {/* Location icon */}
+                                        <IonLabel>Location</IonLabel>
+                                        <IonText slot="end">
+                                            {checkInData.address}
+                                        </IonText>
+                                    </IonItem>
+     
+                                </IonList>
                         </IonCard>
                     )}
                     {checkOutData && (
                         <IonCard>
-                            <IonCardHeader>Checked out at: {checkOutData.localTime}</IonCardHeader>
-                            <IonCardContent>
-                                Location: {checkOutData.location.latitude.toFixed(6)}, {checkOutData.location.longitude.toFixed(6)}
-                                <br />
-                                Address: {checkOutData.address}
-                            </IonCardContent>
+                            <IonList >
+                                <IonItem style={{ fontSize: '1.2em', fontWeight: 'bold' }} >Checked out at: {checkOutData.localTime}</IonItem>
+                                <IonItem>
+                                    <IonIcon icon={locationOutline} slot="start" style={{ fontSize: '1.5em' }} /> {/* Location icon */}
+                                    <IonLabel>Location</IonLabel>
+                                    <IonText slot="end">
+                                        {checkOutData.address}
+                                    </IonText>
+                                </IonItem>
+                            </IonList>
                         </IonCard>
                     )}
+
+                    {(checkInData && checkOutData) && (
+                    <>
+                    <IonItem lines="full">
+                        <IonTextarea
+                            value={comment}
+                            onIonChange={e => setComment(e.detail.value!)}
+                            placeholder="Enter your comments here. (optional)"
+                            autoGrow={true}
+                        />
+                    </IonItem>
+                    <IonItem lines="none">
+                        <IonNote slot="end">{`${comment.length}/100`}</IonNote>
+                    </IonItem>
+                    {comment && (
+                        <IonButton expand="block" onClick={handleCommentSubmit} disabled={!comment.trim()}>Submit Comment</IonButton>
+                    )}
+                    </>
+                    )}
+
                     <IonToast
                         isOpen={showToast}
                         onDidDismiss={() => setShowToast(false)}
@@ -273,7 +309,7 @@ const Checks = () => {
                     <IonLoading isOpen={showLoading} message="Please wait..." />
                 </IonCol>
             </IonRow>
-        </IonContent>
+            </IonContent>
 
         </IonPage>
     );
