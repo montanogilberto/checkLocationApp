@@ -21,11 +21,11 @@ import { calendar, menu, timeOutline } from 'ionicons/icons';
 
 
 import Checks from './pages/Tabs/Checks/Checks';
-import Reports from './pages/Reports';
+import Reports from './pages/Tabs/Reports/Reports';
 import Login from './pages/Authentication/Login';
-import TimeSheets from './pages/TimeSheets';
-import Payroll from './pages/Payroll';
-import Graphics from './pages/Graphics';
+import TimeSheets from './pages/Tabs/TimeSheets/TimeSheets';
+import Payroll from './pages/Tabs/Payrolls/Payroll';
+import Graphics from './pages/Tabs/Graphics/Graphics';
 
 import Header from './components/Header';
 import LogoutAlert from './components/Alerts/LogoutAlert';
