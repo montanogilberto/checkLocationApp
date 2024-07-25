@@ -1,25 +1,25 @@
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
-import ExploreContainer from '../components/ExploreContainer';
-import './Payroll.css';
+import ExploreContainer from '../../../components/ExploreContainer';
+import './TimeSheets.css';
 
-const Payroll: React.FC = () => {
+const TimeSheets: React.FC = () => {
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Payroll</IonTitle>
+          <IonTitle>Timesheet</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
         <IonHeader collapse="condense">
           <IonToolbar>
-            <IonTitle size="large">Payroll</IonTitle>
+            <IonTitle size="large">Time Sheets</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <ExploreContainer name="Payroll page" />
+        <ExploreContainer name="Time Sheets page" />
       </IonContent>
     </IonPage>
   );
 };
 
-export default Payroll;
+export default TimeSheets;
