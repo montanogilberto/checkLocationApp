@@ -15,6 +15,7 @@ import {
   IonSplitPane,
   IonContent,
   IonTabs,
+  IonAvatar,
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { calendar, menu, timeOutline } from 'ionicons/icons';
@@ -41,7 +42,7 @@ import CreateEmployee from './pages/Catalogs/Employees/CreateEmployee';
 import CreateEmploymentType from './pages/Catalogs/EmploymentTypes/CreateEmploymentType';
 import CreateProject from './pages/Catalogs/Projects/CreateProject';
 import CreateStatus from './pages/Catalogs/Statuses/CreateStatus';
-
+import { useUser } from './components/UserContext'
 
 import useInactivityTimer from './hooks/useInactivityTimer';
 
@@ -76,6 +77,7 @@ const App: React.FC = () => {
   const [showLogoutAlert, setShowLogoutAlert] = useState(false);
   const history = useHistory();
   const [showMenuModal, setShowMenuModal] = useState(false);
+  const { username, avatarUrl, setUsername, setAvatarUrl } = useUser();
 
 
   const handleLoginSuccess = () => {
@@ -156,6 +158,11 @@ const App: React.FC = () => {
                   <IonTabButton tab="menu" onClick={handleMenuClick}>
                     <IonIcon aria-hidden="true" icon={menu} size='large' />
                     <IonLabel>Menu</IonLabel>
+                  </IonTabButton>
+                  <IonTabButton tab="profile" href="/profile">
+                    <IonAvatar>
+                      <img src={avatarUrl} alt="User Avatar" />
+                    </IonAvatar>
                   </IonTabButton>
                 </IonTabBar>
               </IonTabs>

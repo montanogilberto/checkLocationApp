@@ -4,6 +4,8 @@ import { useHistory } from 'react-router-dom';
 import './../../master.css';
 import './Login.css';
 import { eye, eyeOff } from 'ionicons/icons';
+import { useUser } from '../../components/UserContext'
+
 
 interface LoginProps {
   onLoginSuccess: () => void;
@@ -17,6 +19,7 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
+  const { username, avatarUrl, setUsername, setAvatarUrl } = useUser();
 
 
   const togglePasswordVisibility = () => {
@@ -61,6 +64,9 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
         console.error('Login failed:', loginMessage);
       } else {
         console.log('Login successful:', loginMessage);
+        setUsername(username);  // Set the username in the global context
+        setAvatarUrl(data.result[0]?.avatarUrl);  // Set the avatar URL in the global context
+        
         onLoginSuccess();
         history.push('/Checks');
       }
