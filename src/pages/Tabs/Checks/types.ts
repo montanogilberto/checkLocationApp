@@ -12,4 +12,5 @@ export interface CheckData {
       heading?: number | null;
     };
     address?: string;
-  }  
+  }
+

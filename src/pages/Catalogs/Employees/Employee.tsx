@@ -72,7 +72,7 @@ const Employee: React.FC = () => {
         <IonCol size="12" sizeSm="8" sizeMd="6" sizeLg="4">
           <IonHeader>
             <IonToolbar>
-              <IonTitle class="ion-text-center">Emplo</IonTitle>
+              
               <IonButtons slot="end">
                 <IonButton onClick={handleAddNew}>
                   <IonIcon icon={people} />
