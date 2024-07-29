@@ -7,3 +7,7 @@
   --box-shadow: none;         /* No shadow for a flat design */
   border: 1px;             /* Removes any border */
 }
+
+.time-text {
+  font-size: medium;
+}

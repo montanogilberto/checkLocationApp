@@ -14,7 +14,7 @@ import {
 
   IonSplitPane,
   IonContent,
-  IonTabs,
+  IonTabs
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { calendar, menu, timeOutline } from 'ionicons/icons';
@@ -41,7 +41,6 @@ import CreateEmployee from './pages/Catalogs/Employees/CreateEmployee';
 import CreateEmploymentType from './pages/Catalogs/EmploymentTypes/CreateEmploymentType';
 import CreateProject from './pages/Catalogs/Projects/CreateProject';
 import CreateStatus from './pages/Catalogs/Statuses/CreateStatus';
-
 
 import useInactivityTimer from './hooks/useInactivityTimer';
 

@@ -5,8 +5,7 @@ import { locationOutline, timeOutline } from 'ionicons/icons';
 import { CheckData } from './types'; // Import CheckData interface
 import { fetchAddress, sendDataToServer } from './api'; // Import API functions
 import { parseAddress, formatDateForSQL } from './utils'; // Import utility functions
-import './Checks.css';
-
+import './Checks.css'; // Import CSS
 
 const Checks = () => {
     const [checkInData, setCheckInData] = useState<CheckData | null>(null);
@@ -28,8 +27,6 @@ const Checks = () => {
     ]);
     const [comment, setComment] = useState("");
     const [showSubmitButton, setShowSubmitButton] = useState(false);
-
-
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -201,7 +198,7 @@ const Checks = () => {
                 <IonCol size="12" sizeSm="8" sizeMd="6" sizeLg="4">
                     <IonHeader>
                         <IonToolbar>
-                            <IonTitle>{currentTime}</IonTitle>
+                            <IonTitle className='time-text'>{currentTime}</IonTitle>
                         </IonToolbar>
                     </IonHeader>
                 </IonCol>
@@ -253,27 +250,26 @@ const Checks = () => {
                     />
                     {checkInData && (
                         <IonCard>
-                                <IonList >
-                                    <IonItem style={{ fontSize: '1.2em', fontWeight: 'bold' }} >Checked in at: {checkInData.localTime}</IonItem>
-                                    <IonItem>
-                                        <IonIcon icon={locationOutline} slot="start" style={{ fontSize: '1.5em' }} /> {/* Location icon */}
-                                        <IonLabel>Location</IonLabel>
-                                        <IonText slot="end">
-                                            {checkInData.address}
-                                        </IonText>
-                                    </IonItem>
-     
-                                </IonList>
+                            <IonList>
+                                <IonItem className="small-text bold-text">Checked in at: {checkInData.localTime}</IonItem>
+                                <IonItem>
+                                    <IonIcon icon={locationOutline} slot="start" className="location-icon" /> {/* Location icon */}
+                                    <IonLabel>Location</IonLabel>
+                                    <IonText slot="end" className="small-text">
+                                        {checkInData.address}
+                                    </IonText>
+                                </IonItem>
+                            </IonList>
                         </IonCard>
                     )}
                     {checkOutData && (
                         <IonCard>
-                            <IonList >
-                                <IonItem style={{ fontSize: '1.2em', fontWeight: 'bold' }} >Checked out at: {checkOutData.localTime}</IonItem>
+                            <IonList>
+                                <IonItem className="small-text bold-text">Checked out at: {checkOutData.localTime}</IonItem>
                                 <IonItem>
-                                    <IonIcon icon={locationOutline} slot="start" style={{ fontSize: '1.5em' }} /> {/* Location icon */}
+                                    <IonIcon icon={locationOutline} slot="start" className="location-icon" /> {/* Location icon */}
                                     <IonLabel>Location</IonLabel>
-                                    <IonText slot="end">
+                                    <IonText slot="end" className="small-text">
                                         {checkOutData.address}
                                     </IonText>
                                 </IonItem>
@@ -310,7 +306,6 @@ const Checks = () => {
                 </IonCol>
             </IonRow>
             </IonContent>
-
         </IonPage>
     );
 };
