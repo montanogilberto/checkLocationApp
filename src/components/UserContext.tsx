@@ -10,7 +10,7 @@ interface UserContextProps {
 const UserContext = createContext<UserContextProps | undefined>(undefined);
 
 export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const defaultAvatarUrl = 'ttps://www.w3schools.com/howto/img_avatar.png'; // Set your default avatar image path here
+  const defaultAvatarUrl = 'https://www.w3schools.com/howto/img_avatar.png'; // Ensure this URL is correct
   const [username, setUsername] = useState<string>('');
   const [avatarUrl, setAvatarUrl] = useState<string>(defaultAvatarUrl);
 

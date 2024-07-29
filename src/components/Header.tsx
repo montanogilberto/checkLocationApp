@@ -1,5 +1,5 @@
 import React from 'react';
-import { IonHeader, IonToolbar, IonButtons, IonButton, IonIcon, IonAvatar } from '@ionic/react';
+import { IonHeader, IonToolbar, IonButtons, IonButton, IonIcon, IonAvatar, IonChip, IonLabel } from '@ionic/react';
 import { menuOutline, helpCircleOutline, mailOutline, logOutOutline } from 'ionicons/icons';
 import { useUser } from './UserContext'; // Ensure correct import path
 
@@ -10,19 +10,17 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ presentAlertPopover, presentMailPopover, handleLogout }) => {
-  const { avatarUrl } = useUser();
+  const { username, avatarUrl } = useUser();
 
   return (
     <IonHeader>
       <IonToolbar>
-        <IonButtons slot="start" style={{ display: 'flex', alignItems: 'center' }}>
-          <IonAvatar style={{ marginRight: '10px', width: '40px', height: '40px' }}>
-            <img src={avatarUrl} alt="User Avatar" />
-          </IonAvatar>
-          <IonButton>
-            <IonIcon slot="icon-only" icon={menuOutline} />
-          </IonButton>
-        </IonButtons>
+      <IonChip>
+        <IonAvatar>
+          <img src="https://ionicframework.com/docs/img/demos/avatar.svg" />
+        </IonAvatar>
+        <IonLabel>{username}</IonLabel>
+      </IonChip>
         <IonButtons slot="end">
           <IonButton onClick={presentAlertPopover}>
             <IonIcon slot="icon-only" icon={helpCircleOutline} />
