@@ -58,7 +58,7 @@ const Checks = () => {
                   latitude: position.coords.latitude.toString(),
                   longitude: position.coords.longitude.toString(),
                   description: address,
-                  datetimelocal: localTime,
+                  datetimelocal: formattedDateTime,
                   checkTypeId: 1,
                   userId: 1,
                   street: addressParts.street,
